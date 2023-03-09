@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acszo.newtpl.model.Bus
 import com.acszo.newtpl.repository.BusRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class BusViewModel: ViewModel() {
@@ -13,22 +15,27 @@ class BusViewModel: ViewModel() {
     private val _buses: MutableLiveData<List<Bus>> = MutableLiveData()
     val buses: LiveData<List<Bus>> get() = _buses
 
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
     fun getBuses(stopCode: String) = viewModelScope.launch {
+        _isLoading.value = true
         try {
-            val buses: ArrayList<Bus> = filterBuses(stopCode) as ArrayList<Bus>
+            val buses: ArrayList<Bus> = BusRepository().getBuses(stopCode)
             if (stopCode == "UD504") {
-                buses.addAll(filterBuses("70C64"))
+                buses.addAll(BusRepository().getBuses("70C64"))
             }
-            _buses.postValue(buses)
+            _buses.postValue(filterBuses(buses))
+            _isLoading.value = false
         } catch(e: Exception) {
             print(e.message)
         }
     }
 
-    private suspend fun filterBuses(stopCode: String): List<Bus> {
-        return BusRepository().getBuses(stopCode).filter {
-            it.LineCode == "10" || it.LineCode == "S" || it.LineCode == "9"
-        }
+    private fun filterBuses(buses: ArrayList<Bus>): List<Bus> {
+        return buses.filter {
+            it.LineCode == "9" || it.LineCode == "10" || it.LineCode == "S"
+        }.distinctBy { it.Race }
     }
 
 }

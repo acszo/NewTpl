@@ -31,9 +31,6 @@ class MainActivity : ComponentActivity() {
                 val systemUiController = rememberSystemUiController()
                 val systemColor: Color = MaterialTheme.colorScheme.surface
                 SideEffect {
-                    systemUiController.setStatusBarColor(
-                        color = systemColor
-                    )
                     systemUiController.setSystemBarsColor(
                         color = systemColor
                     )
