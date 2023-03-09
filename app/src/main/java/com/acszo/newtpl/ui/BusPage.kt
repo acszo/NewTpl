@@ -28,13 +28,11 @@ fun BusPage(stopCode: String) {
     val isLoading by viewModel.isLoading.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    if (buses.value == null) {
+    if (buses.value == null)
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 64.dp, 0.dp, 0.dp)
-        )
-    }
+                .padding(0.dp, 64.dp, 0.dp, 0.dp))
     else
     SwipeRefresh(
         state = swipeRefreshState,
