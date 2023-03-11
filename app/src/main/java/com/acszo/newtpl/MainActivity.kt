@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.*
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
@@ -37,10 +38,11 @@ class MainActivity : ComponentActivity() {
                 }
                 Scaffold(
                     topBar = {
-                        SmallTopAppBar(
+                        TopAppBar(
                             title = { Text(text = "Verso ${currentRoute.lowercase()}") },
-                            colors = TopAppBarDefaults.smallTopAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surface
+                            colors = topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                scrolledContainerColor = MaterialTheme.colorScheme.surface
                             )
                         )
                     },

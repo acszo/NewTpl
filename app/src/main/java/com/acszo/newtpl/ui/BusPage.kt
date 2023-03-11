@@ -3,76 +3,131 @@ package com.acszo.newtpl.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.acszo.newtpl.R
+import com.acszo.newtpl.model.Bus
 import com.acszo.newtpl.viewmodel.BusViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusPage(stopCode: String) {
     val viewModel = viewModel<BusViewModel>()
-    viewModel.getBuses(stopCode)
-    val buses = viewModel.buses.observeAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    LaunchedEffect(Unit) { viewModel.getBuses(stopCode) }
+    val buses = viewModel.buses.collectAsState().value
+    val isLoading = viewModel.isLoading.collectAsState().value
+    val isRetry = remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    if (buses.value == null)
-        LinearProgressIndicator(
+    if (isRetry.value) {
+        LaunchedEffect(Unit) { viewModel.getBuses(stopCode) }
+        isRetry.value = false
+    }
+
+    if (isLoading) {
+        ProgressIndicator()
+    }
+    else {
+        if (buses.isEmpty()) {
+            EmptyListMessage(isRetry)
+        } else {
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = { viewModel.getBuses(stopCode) }
+            ) {
+               ListBuses(buses)
+            }
+        }
+    }
+}
+
+@Composable
+fun ProgressIndicator() {
+    LinearProgressIndicator(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp, 64.dp, 0.dp, 0.dp)
+    )
+}
+
+@Composable
+fun EmptyListMessage(value: MutableState<Boolean>) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.ascii_emoji),
+                fontSize = 40.sp,
+            )
+            Text(
+                text = stringResource(R.string.no_available_buses),
+                fontSize = 20.sp,
+            )
+            RetryButton(value)
+        }
+    }
+}
+
+@Composable
+fun RetryButton(value: MutableState<Boolean>) {
+    Button(onClick = { value.value = true }) {
+        Text(text = stringResource(R.string.retry))
+    }
+}
+
+@Composable
+fun ListBuses(buses: List<Bus>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.background),
+        contentPadding = PaddingValues(0.dp, 70.dp, 0.dp, 80.dp)
+    ) {
+        items(items = buses) { bus ->
+            BusItemList(bus)
+        }
+    }
+}
+
+@Composable
+fun BusItemList(bus: Bus) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(10.dp, 5.dp, 10.dp, 10.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 64.dp, 0.dp, 0.dp))
-    else
-    SwipeRefresh(
-        state = swipeRefreshState,
-        onRefresh = { viewModel.getBuses(stopCode) }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(0.dp, 70.dp, 0.dp, 80.dp)
+                .height(80.dp)
+                .padding(10.dp, 10.dp, 10.dp, 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            buses.value?.size?.let {
-                items(it) { index ->
-                    val bus = buses.value!![index]
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .padding(10.dp, 5.dp, 10.dp, 10.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .padding(10.dp, 10.dp, 10.dp, 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            LineText(bus.LineCode)
-                            Column(
-                                modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)
-                            ) {
-                                BusInfoText(
-                                    bus.Destination.lowercase().replaceFirstChar { it.uppercase() })
-                                BusInfoText(bus.ArrivalTime)
-                            }
-                        }
-                    }
-                }
+            LineText(bus.LineCode)
+            Column(
+                modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)
+            ) {
+                BusInfoText(
+                    bus.Destination.lowercase()
+                        .replaceFirstChar { it.uppercase() })
+                BusInfoText(bus.ArrivalTime)
             }
         }
     }
