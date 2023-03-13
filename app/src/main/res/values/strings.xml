@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">New Tpl</string>
-    <string name="ascii_emoji">(╥﹏╥)</string>
+    <string name="ascii_emoji_sad">(╥﹏╥)</string>
+    <string name="ascii_emoji_idk">┐(￣ヘ￣)┌</string>
+    <string name="ascii_emoji_lost">(@_@;)</string>
+    <string name="ascii_emoji_mad">(ΘдΘ)</string>
+    <string name="ascii_emoji_table">(ノ-_-)ノ~┻━┻</string>
     <string name="no_available_buses">Nessuna navetta disponibile</string>
     <string name="retry">Riprova</string>
 </resources>

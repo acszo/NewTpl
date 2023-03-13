@@ -17,6 +17,7 @@ import com.acszo.newtpl.R
 import com.acszo.newtpl.model.Bus
 import com.acszo.newtpl.viewmodel.BusViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
@@ -42,7 +43,15 @@ fun BusPage(stopCode: String) {
         } else {
             SwipeRefresh(
                 state = swipeRefreshState,
-                onRefresh = { viewModel.getBuses(stopCode) }
+                onRefresh = { viewModel.getBuses(stopCode) },
+                indicator = { state, trigger ->
+                    SwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = trigger,
+                        contentColor = MaterialTheme.colorScheme.surface,
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                    )
+                }
             ) {
                ListBuses(buses)
             }
@@ -53,14 +62,19 @@ fun BusPage(stopCode: String) {
 @Composable
 fun ProgressIndicator() {
     LinearProgressIndicator(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 64.dp, 0.dp, 0.dp)
+        modifier = Modifier.fillMaxWidth()
     )
 }
 
 @Composable
 fun EmptyListMessage(value: MutableState<Boolean>) {
+    val emoji = listOf(
+        stringResource(R.string.ascii_emoji_sad),
+        stringResource(R.string.ascii_emoji_idk),
+        stringResource(R.string.ascii_emoji_lost),
+        stringResource(R.string.ascii_emoji_mad),
+        stringResource(R.string.ascii_emoji_table)
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -70,7 +84,7 @@ fun EmptyListMessage(value: MutableState<Boolean>) {
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = stringResource(R.string.ascii_emoji),
+                text = emoji.random(),
                 fontSize = 40.sp,
             )
             Text(
@@ -95,7 +109,7 @@ fun ListBuses(buses: List<Bus>) {
         modifier = Modifier
             .fillMaxHeight()
             .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(0.dp, 70.dp, 0.dp, 80.dp)
+        contentPadding = PaddingValues(0.dp, 10.dp, 0.dp, 0.dp)
     ) {
         items(items = buses) { bus ->
             BusItemList(bus)

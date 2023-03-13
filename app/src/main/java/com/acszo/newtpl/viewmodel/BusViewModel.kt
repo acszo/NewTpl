@@ -24,7 +24,7 @@ class BusViewModel: ViewModel() {
             if (stopCode == "UD504") {
                 buses.addAll(BusRepository().getBuses("70C64"))
             }
-            _buses.update {filterBuses(buses)}
+            _buses.update { filterBuses(buses) }
             _isLoading.update { false }
         } catch(e: Exception) {
             print(e.message)
@@ -34,7 +34,7 @@ class BusViewModel: ViewModel() {
     private fun filterBuses(buses: ArrayList<Bus>): List<Bus> {
         return buses.filter {
             it.LineCode == "9" || it.LineCode == "10" || it.LineCode == "S"
-        }.distinctBy { it.Race }
+        }.distinctBy { it.Race }.sortedBy { it.Time }
     }
 
 }
