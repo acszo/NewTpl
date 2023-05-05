@@ -112,20 +112,20 @@ fun ListBuses(buses: List<Bus>) {
         contentPadding = PaddingValues(0.dp, 10.dp, 0.dp, 0.dp)
     ) {
         items(items = buses) { bus ->
-            BusItemList(bus)
+            BusItem(bus)
         }
     }
 }
 
 @Composable
-fun BusItemList(bus: Bus) {
+fun BusItem(bus: Bus) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .padding(10.dp, 5.dp, 10.dp, 10.dp),
+            .padding(15.dp, 5.dp, 15.dp, 10.dp),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Row(
             modifier = Modifier

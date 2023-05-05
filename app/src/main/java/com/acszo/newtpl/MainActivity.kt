@@ -11,6 +11,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.acszo.newtpl.ui.nav.BottomNavigationBar
@@ -31,10 +32,14 @@ class MainActivity : ComponentActivity() {
 
             NewTplTheme {
                 val systemUiController = rememberSystemUiController()
-                val systemColor: Color = MaterialTheme.colorScheme.surface
+                val statusBarColor: Color = MaterialTheme.colorScheme.surface
+                val navigationBarColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
                 SideEffect {
-                    systemUiController.setSystemBarsColor(
-                        color = systemColor
+                    systemUiController.setStatusBarColor(
+                        color = statusBarColor
+                    )
+                    systemUiController.setNavigationBarColor(
+                        color = navigationBarColor
                     )
                 }
                 Scaffold(
@@ -49,7 +54,9 @@ class MainActivity : ComponentActivity() {
                     },
                     bottomBar = { BottomNavigationBar(navController = navController) }
                 ) {
-                    Column(modifier = Modifier.padding(it)) {
+                    Column(
+                        modifier = Modifier.padding(it)
+                    ) {
                         RootNavigation(navController)
                     }
                 }

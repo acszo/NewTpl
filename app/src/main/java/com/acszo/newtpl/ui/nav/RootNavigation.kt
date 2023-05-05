@@ -10,11 +10,11 @@ import com.acszo.newtpl.ui.nav.Pages.university
 
 @Composable
 fun RootNavigation(navController: NavHostController) {
-    NavHost(navController, startDestination = university) {
-        composable(university) {
+    NavHost(navController = navController, startDestination = university) {
+        composable(route = university) {
             BusPage("70C37")
         }
-        composable(station) {
+        composable(route = station) {
             BusPage("UD504")
         }
     }
