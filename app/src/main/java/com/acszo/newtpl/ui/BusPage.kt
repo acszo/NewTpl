@@ -139,14 +139,14 @@ fun BusItem(bus: Bus) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            LineText(bus.lineCode)
+            LineText(bus.LineCode)
             Column {
                 BusInfoText(
-                    bus.destination
+                    bus.Destination
                         .lowercase()
                         .replaceFirstChar { it.uppercase() }
                 )
-                BusInfoText(bus.arrivalTime)
+                BusInfoText(bus.ArrivalTime)
             }
         }
     }
