@@ -34,29 +34,35 @@ fun BusPage(stopCode: String) {
         isRetry.value = false
     }
 
-    if (isLoading) {
-        ProgressIndicator()
-    }
-    else {
-        if (buses.isEmpty()) {
-            EmptyListMessage(isRetry)
-        } else {
-            SwipeRefresh(
-                state = swipeRefreshState,
-                onRefresh = { viewModel.getBuses(stopCode) },
-                indicator = { state, trigger ->
-                    SwipeRefreshIndicator(
-                        state = state,
-                        refreshTriggerDistance = trigger,
-                        contentColor = MaterialTheme.colorScheme.surface,
-                        backgroundColor = MaterialTheme.colorScheme.primary,
-                    )
+    Scaffold {
+        Column(
+            modifier = Modifier.padding(it)
+        ) {
+            if (isLoading) {
+                ProgressIndicator()
+            } else {
+                if (buses.isEmpty()) {
+                    EmptyListMessage(isRetry)
+                } else {
+                    SwipeRefresh(
+                        state = swipeRefreshState,
+                        onRefresh = { viewModel.getBuses(stopCode) },
+                        indicator = { state, trigger ->
+                            SwipeRefreshIndicator(
+                                state = state,
+                                refreshTriggerDistance = trigger,
+                                contentColor = MaterialTheme.colorScheme.surface,
+                                backgroundColor = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    ) {
+                        ListBuses(buses)
+                    }
                 }
-            ) {
-               ListBuses(buses)
             }
         }
     }
+
 }
 
 @Composable
@@ -107,9 +113,8 @@ fun RetryButton(value: MutableState<Boolean>) {
 fun ListBuses(buses: List<Bus>) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxHeight()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(0.dp, 10.dp, 0.dp, 0.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 15.dp),
     ) {
         items(items = buses) { bus ->
             BusItem(bus)
@@ -122,26 +127,26 @@ fun BusItem(bus: Bus) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(15.dp, 5.dp, 15.dp, 10.dp),
+            .padding(vertical = 5.dp),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .height(80.dp)
-                .padding(10.dp, 10.dp, 10.dp, 10.dp),
+                .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            LineText(bus.LineCode)
-            Column(
-                modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)
-            ) {
+            LineText(bus.lineCode)
+            Column {
                 BusInfoText(
-                    bus.Destination.lowercase()
-                        .replaceFirstChar { it.uppercase() })
-                BusInfoText(bus.ArrivalTime)
+                    bus.destination
+                        .lowercase()
+                        .replaceFirstChar { it.uppercase() }
+                )
+                BusInfoText(bus.arrivalTime)
             }
         }
     }

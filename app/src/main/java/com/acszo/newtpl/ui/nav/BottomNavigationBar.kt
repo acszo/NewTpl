@@ -1,6 +1,5 @@
 package com.acszo.newtpl.ui.nav
 
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,7 +18,6 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem.Station
     )
     BottomAppBar(
-        modifier = Modifier.height(80.dp),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()

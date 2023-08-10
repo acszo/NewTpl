@@ -33,8 +33,8 @@ class BusViewModel: ViewModel() {
 
     private fun filterBuses(buses: ArrayList<Bus>): List<Bus> {
         return buses.filter {
-            it.LineCode == "9" || it.LineCode == "10" || it.LineCode == "S"
-        }.distinctBy { it.Race }.sortedBy { it.Time }
+            it.lineCode == "9" || it.lineCode == "10" || it.lineCode == "S"
+        }.distinctBy { it.race }.sortedBy { it.time }
     }
 
 }
