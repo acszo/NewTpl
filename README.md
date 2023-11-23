@@ -1,4 +1,4 @@
-![NewTpl](/app/src/main/res/mipmap-xhdpi/ic_launcher.png)
+![NewTpl](logo.png)
 
 # New Tpl
 

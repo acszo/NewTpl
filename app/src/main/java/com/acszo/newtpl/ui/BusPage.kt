@@ -1,6 +1,5 @@
 package com.acszo.newtpl.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.acszo.newtpl.R
 import com.acszo.newtpl.model.Bus
@@ -24,8 +24,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 fun BusPage(stopCode: String) {
     val viewModel = viewModel<BusViewModel>()
     LaunchedEffect(Unit) { viewModel.getBuses(stopCode) }
-    val buses = viewModel.buses.collectAsState().value
-    val isLoading = viewModel.isLoading.collectAsState().value
+    val buses = viewModel.buses.collectAsStateWithLifecycle().value
+    val isLoading = viewModel.isLoading.collectAsStateWithLifecycle().value
     val isRetry = remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
@@ -113,7 +113,7 @@ fun RetryButton(value: MutableState<Boolean>) {
 fun ListBuses(buses: List<Bus>) {
     LazyColumn(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize()
             .padding(horizontal = 15.dp),
     ) {
         items(items = buses) { bus ->

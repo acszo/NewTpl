@@ -17,16 +17,20 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem.University,
         BottomNavItem.Station
     )
+
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+
         items.forEach { item ->
+            val icon = if (currentRoute == item.route) item.iconSelected else item.icon
+
             NavigationBarItem(
                 modifier = Modifier.clip(RoundedCornerShape(26.dp)),
                 label = { Text(text = item.route) },
-                icon = { Icon(painterResource(id = item.icon), contentDescription = item.route) },
+                icon = { Icon(painterResource(id = icon), contentDescription = item.route) },
                 selected = currentRoute == item.route,
                 onClick = {
                     if (currentRoute != item.route)  navController.navigate(item.route) else return@NavigationBarItem
